@@ -1,6 +1,7 @@
 aniso8601==8.0.0
 certifi==2019.9.11
 Click==7.0
+django-environ==0.4.5
 Flask==1.1.1
 Flask-RESTful==0.3.7
 h5py==2.9.0

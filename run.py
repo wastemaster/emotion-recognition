@@ -3,11 +3,16 @@ from flask import Flask, render_template, request
 from flask_restful import Resource, Api, reqparse
 import pandas as pd
 import json
+import environ
 
 
 app = Flask(__name__)
-app.config['EXPLAIN_TEMPLATE_LOADING'] = True
-app.config['DEBUG'] = True
+
+env = environ.Env()
+environ.Env.read_env()  # reading .env file
+app.config['EXPLAIN_TEMPLATE_LOADING'] = env.bool('EXPLAIN_TEMPLATE_LOADING', default=False)
+app.config['DEBUG'] = env.bool('DEBUG', default=False)
+print(app.config)
 
 api = Api(app)
 
