@@ -1,10 +1,15 @@
-from flask import Flask, render_template, request
-import pandas as pd
 from emotion_predictor import EmotionPredictor
+from flask import Flask, render_template, request
+from flask_restful import Resource, Api, reqparse
+import pandas as pd
+import json
+
 
 app = Flask(__name__)
 app.config['EXPLAIN_TEMPLATE_LOADING'] = True
 app.config['DEBUG'] = True
+
+api = Api(app)
 
 # Pandas presentation options
 pd.options.display.max_colwidth = 150   # show whole tweet's content
@@ -15,9 +20,7 @@ pd.options.display.width = 200          # don't break columns
 # Predictor for Ekman's emotions in multiclass setting.
 # classifications: ekman, plutchik, poms
 # setting: mc (multiclass) ml (multilabel)
-model1 = EmotionPredictor(classification='ekman', setting='mc', use_unison_model=True)
-model2 = EmotionPredictor(classification='plutchik', setting='mc', use_unison_model=True)
-model3 = EmotionPredictor(classification='poms', setting='mc', use_unison_model=True)
+model = EmotionPredictor(classification='plutchik', setting='mc', use_unison_model=True)
 
 #probabilities = model.predict_probabilities(tweets)
 #print(probabilities, '\n')
@@ -33,25 +36,35 @@ def index_page():
     context = {'one': 1, 'two': 2}
     if request.method == "POST":
         essay =  request.form.get("essay")
-        predictions1 = model1.predict_classes([essay])
-        predictions2 = model2.predict_classes([essay])
-        predictions3 = model3.predict_classes([essay])
-
-        probabilities1 = format_predictions(model1.predict_probabilities([essay]))
-        probabilities2 = format_predictions(model2.predict_probabilities([essay]))
-        probabilities3 = format_predictions(model3.predict_probabilities([essay]))
+        predictions = model.predict_classes([essay])
+        probabilities = format_predictions(model.predict_probabilities([essay]))
 
         context.update({
             'essay':essay,
-            'predictions1': predictions1,
-            'predictions2': predictions2,
-            'predictions3': predictions3,
-            'probabilities1': probabilities1,
-            'probabilities2': probabilities2,
-            'probabilities3': probabilities3
+            'predictions': predictions,
+            'probabilities': probabilities,
         })
 
     return render_template("index.html", **context)
+
+parser = reqparse.RequestParser()
+parser.add_argument('essay', help='Returns probabilities for list of emotions according to plutchik model')
+
+
+class EmotionPredictorResource(Resource):
+    def post(self):
+        args = parser.parse_args()
+        essay = args['essay']
+
+        probabilities = model.predict_probabilities([essay])
+
+        response = {}
+        response.update({
+            'probabilities': json.loads(probabilities.iloc[0].to_json())})
+
+        return response
+
+api.add_resource(EmotionPredictorResource, '/api/predictor')
 
 if __name__ == '__main__':
     app.run()

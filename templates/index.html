@@ -17,21 +17,11 @@
 {% if essay %}
     <hr />
     <h3>Predictions</h3>
-    Model1 (ekman): {{ predictions1['Emotion'][0] }}
-    <br />
-    Model2 (plutchik): {{ predictions2['Emotion'][0] }}
-    <br />
-    Model3 (poms): {{ predictions3['Emotion'][0] }}
-
+    Model (plutchik): {{ predictions['Emotion'][0] }}
     <hr />
 
     <h3>Probabilities</h3>
-    Model1: {{ probabilities1 }}
-    <br />
-    Model2: {{ probabilities2 }}
-    <br />
-    Model3: {{ probabilities3 }}
-
+    {{ probabilities }}
 {% endif %}
 
 
