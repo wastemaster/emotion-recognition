@@ -12,7 +12,6 @@ env = environ.Env()
 environ.Env.read_env()  # reading .env file
 app.config['EXPLAIN_TEMPLATE_LOADING'] = env.bool('EXPLAIN_TEMPLATE_LOADING', default=False)
 app.config['DEBUG'] = env.bool('DEBUG', default=False)
-print(app.config)
 
 api = Api(app)
 
