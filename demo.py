@@ -31,5 +31,5 @@ print(predictions, '\n')
 probabilities = model.predict_probabilities(tweets)
 print(probabilities, '\n')
 
-embeddings = model.embed(tweets)
-print(embeddings, '\n')
+#embeddings = model.embed(tweets)
+#print(embeddings, '\n')

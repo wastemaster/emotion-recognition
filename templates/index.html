@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Index page{% endblock %}
+
+{% block body %}
+<h1>Emotion detection app</h1>
+
+
+<form action="/" method="POST">
+    <textarea name="essay" cols="70" rows="10">{% if essay %}{{ essay  }}{% endif %}</textarea>
+    <br />
+    <input type="submit">
+</form>
+
+
+
+{% if essay %}
+    <hr />
+    <h3>Predictions</h3>
+    Model1 (ekman): {{ predictions1['Emotion'][0] }}
+    <br />
+    Model2 (plutchik): {{ predictions2['Emotion'][0] }}
+    <br />
+    Model3 (poms): {{ predictions3['Emotion'][0] }}
+
+    <hr />
+
+    <h3>Probabilities</h3>
+    Model1: {{ probabilities1 }}
+    <br />
+    Model2: {{ probabilities2 }}
+    <br />
+    Model3: {{ probabilities3 }}
+
+{% endif %}
+
+
+{% endblock %}
